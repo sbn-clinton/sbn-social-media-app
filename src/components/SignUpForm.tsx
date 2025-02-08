@@ -15,9 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { Loader } from "lucide-react";
+import { SignUpWithEmail } from "../../server/action";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
+  fullName: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   email: z.string().email({
@@ -32,11 +36,13 @@ const formSchema = z.object({
 });
 
 const SignUpForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      fullName: "",
       email: "",
       username: "",
       password: "",
@@ -44,10 +50,21 @@ const SignUpForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    setIsLoading(true);
+    try {
+      const response = await SignUpWithEmail(values);
+      console.log(response);
+      if (response.success === true) {
+        form.reset();
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -70,11 +87,11 @@ const SignUpForm = () => {
         >
           <FormField
             control={form.control}
-            name="name"
+            name="fullName"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Name" {...field} />
+                  <Input placeholder="Full Name" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -120,8 +137,13 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Continue
+          <Button
+            type="submit"
+            className="w-full bg-[#4C68D5] hover:bg-[#4C68D5]/80]"
+            disabled={isLoading}
+          >
+            {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </Button>
         </form>
       </Form>

@@ -10,8 +10,6 @@ import Link from "next/link";
 const Navbar = () => {
   const pathname = usePathname();
 
-  console.log(pathname);
-
   // Hide component only on small screens when pathname matches /messages/{any-slug-or-id}
   const isMessagePage = /^\/messages\/[^/]+$/.test(pathname);
 

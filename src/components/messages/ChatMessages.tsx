@@ -1,107 +1,70 @@
 import Image from "next/image";
 import { Card } from "../ui/card";
-// import ChatInput from "./ChatInput";
+import { getLoggedInUser } from "../../../server/action";
+import { getMessages } from "../../../server/userAction";
 
-const ChatMessages = ({ slug }: { slug: string }) => {
+const ChatMessages = async ({ slug }: { slug: string }) => {
   console.log(slug);
+  const reciever = slug;
+  const user = await getLoggedInUser();
+  const sender = user.accountId;
+
+  console.log("reciever", reciever);
+  console.log("sender", sender);
+
+  const messages = await getMessages(reciever, sender);
+
   return (
     <Card className="flex flex-col gap-4 p-4 border-slate-300 w-full bg-inherit flex-1 border-none shadow-none">
       <div className="flex flex-col h-full w-full gap-5 bg-inherit">
-        <div className="flex gap-2 items-start justify-start">
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/friends1.png"} alt="img" fill />
-          </div>
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-slate-200 rounded-xl rounded-b-xl rounded-s-none w-fit">
-            <p className="text-xs md:text-sm text-slate-600">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit.
-            </p>
-            <p className="text-xs md:text-sm text-slate-500 text-end">
-              1:00 PM
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2 items-start justify-end">
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-blue-400  rounded-xl rounded-b-xl rounded-tr-none w-fit">
-            <p className="text-xs md:text-sm text-slate-200">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit
-              voluptates quam laudantium quaerat doloribus blanditiis autem
-            </p>
-            <p className="text-xs md:text-sm text-slate-200 text-end">
-              3:05 PM
-            </p>
-          </div>
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/sidebar-image.png"} alt="img" fill />
-          </div>
-        </div>
-        <div className="flex gap-2 items-start justify-start">
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/friends1.png"} alt="img" fill />
-          </div>
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-slate-200 rounded-xl rounded-b-xl rounded-s-none w-fit">
-            <p className="text-xs md:text-sm text-slate-600">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit.
-            </p>
-            <p className="text-xs md:text-sm text-slate-500 text-end">
-              1:00 PM
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2 items-start justify-end">
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-blue-400  rounded-xl rounded-b-xl rounded-tr-none w-fit">
-            <p className="text-xs md:text-sm text-slate-200">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit
-              voluptates quam laudantium quaerat doloribus blanditiis autem
-            </p>
-            <p className="text-xs md:text-sm text-slate-200 text-end">
-              3:05 PM
-            </p>
-          </div>
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/sidebar-image.png"} alt="img" fill />
-          </div>
-        </div>
-        <div className="flex gap-2 items-start justify-start">
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/friends1.png"} alt="img" fill />
-          </div>
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-slate-200 rounded-xl rounded-b-xl rounded-s-none w-fit">
-            <p className="text-xs md:text-sm text-slate-600">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit.
-            </p>
-            <p className="text-xs md:text-sm text-slate-500 text-end">
-              1:00 PM
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2 items-start justify-end">
-          <div className="flex flex-col gap-1 md:gap-2 p-2 md:p-3 bg-blue-400  rounded-xl rounded-b-xl rounded-tr-none w-fit">
-            <p className="text-xs md:text-sm text-slate-200">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Dignissimos, totam odio architecto rerum enim soluta perspiciatis
-              minus fuga laboriosam delectus asperiores obcaecati velit
-              voluptates quam laudantium quaerat doloribus blanditiis autem
-            </p>
-            <p className="text-xs md:text-sm text-slate-200 text-end">
-              3:05 PM
-            </p>
-          </div>
-          <div className="relative w-5 h-5 md:w-10 md:h-10">
-            <Image src={"/images/sidebar-image.png"} alt="img" fill />
-          </div>
-        </div>
+        {messages?.map((message) => {
+          const isSender = message.senderId === sender;
+
+          return (
+            <div
+              key={message.$id}
+              className={`flex gap-2 items-start ${
+                isSender ? "justify-end" : "justify-start"
+              }`}
+            >
+              {!isSender && (
+                <div className="relative w-5 h-5 md:w-10 md:h-10">
+                  <Image
+                    src={message.sender.imageUrl}
+                    alt={message.sender.fullName}
+                    fill
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+
+              <div
+                className={`flex flex-col gap-1 md:gap-2 p-2 md:p-3 ${
+                  isSender
+                    ? "bg-blue-400 text-slate-200 rounded-xl rounded-b-xl rounded-tr-none"
+                    : "bg-slate-200 text-slate-600 rounded-xl rounded-b-xl rounded-s-none"
+                } w-fit`}
+              >
+                <p className="text-sm">{message.message}</p>
+                <p className="text-xs md:text-sm text-end opacity-75">
+                  {new Date(message.$createdAt).toLocaleTimeString()}
+                </p>
+              </div>
+
+              {isSender && (
+                <div className="relative w-5 h-5 md:w-10 md:h-10">
+                  <Image
+                    src={message.sender.imageUrl}
+                    alt={message.sender.fullName}
+                    fill
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
-      {/* <ChatInput /> */}
     </Card>
   );
 };

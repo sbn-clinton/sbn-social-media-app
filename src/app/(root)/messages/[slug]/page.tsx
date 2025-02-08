@@ -1,6 +1,7 @@
-import BackButton from "@/components/BackButton";
 import ChatInput from "@/components/messages/ChatInput";
 import ChatMessages from "@/components/messages/ChatMessages";
+import FriendTopDetail from "@/components/messages/FriendTopDetail";
+import { getLoggedInUser } from "../../../../../server/action";
 
 const MessagePage = async ({
   params,
@@ -8,11 +9,12 @@ const MessagePage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const slug = (await params).slug;
+  const user = await getLoggedInUser();
   return (
     <div className="flex flex-col gap-10 w-full min-h-full  px-4 md:px-0 py-4 md:py-0 items-center  ">
-      <BackButton />
+      <FriendTopDetail slug={slug} />
       <ChatMessages slug={slug} />
-      <ChatInput />
+      <ChatInput slug={slug} user={user} />
     </div>
   );
 };

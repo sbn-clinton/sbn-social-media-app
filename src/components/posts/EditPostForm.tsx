@@ -7,33 +7,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { CloudUpload, Edit, Loader } from "lucide-react";
+import { CloudUpload, Edit3, Loader } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { EditProfileAction } from "../../../server/profileAction";
 
-export function EditProfile({
-  fullName,
-  username,
-  bio,
+import { updatePost } from "../../../server/postsAction";
+
+export function EditPostForm({
+  postId,
+  creator,
+  content1,
   imageId,
-  userId,
 }: {
-  fullName: string;
-  username: string;
-  bio: string;
+  postId: string;
+  creator: string;
+  content1: string;
   imageId: string;
-  userId: string;
 }) {
-  const [fullNameValue, setFullNameValue] = useState(fullName);
-  const [usernameValue, setUsernameValue] = useState(username);
-  const [bioValue, setBioValue] = useState(bio);
+  const [content, setContent] = useState(content1);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const [imageUrlValue, setImageUrlValue] = useState<File | null>(null);
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,32 +40,30 @@ export function EditProfile({
 
     if (!inputElement) {
       console.error("File input element not found.");
-      return;
     }
 
-    if (!inputElement.files?.length) {
-      console.error("No file selected.");
-      return;
-    }
-
-    const file = inputElement.files[0];
+    const file = inputElement?.files?.[0];
     console.log("Selected file:", file);
 
     const formData = {
-      fullName: fullNameValue,
-      username: usernameValue,
-      bio: bioValue,
-      imageId: imageId,
+      postId: postId,
+      content: content,
       file: file,
-      userId: userId,
+      creator: creator,
+      imageId: imageId,
     };
+
     setIsLoading(true);
     try {
-      const response = await EditProfileAction(formData);
+      const response = await updatePost(formData);
       if (response?.success === true) {
-        console.log("Profile updated successfully");
+        console.log("Post updated successfully");
         router.refresh();
         router.push("/profile");
+        setContent("");
+        if (inputElement) {
+          inputElement.value = "";
+        }
       }
     } catch (error) {
       console.log(error);
@@ -83,10 +75,12 @@ export function EditProfile({
   return (
     <Dialog>
       <DialogTrigger className="bg-inherit" asChild>
-        <Edit className="md:w-6 md:h-6 h-4 w-4 text-slate-600" />
+        <div className="flex items-center gap-2 cursor-pointer">
+          <Edit3 className="w-4 h-4 md:w-5 md:h-5 text-sky-500" />
+        </div>
       </DialogTrigger>
       <DialogContent className="w-[90%] md:max-w-md mx-auto rounded-2xl">
-        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogTitle>Edit Post</DialogTitle>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
           <div className="relative flex items-center justify-center gap-2 border-2 py-2 rounded-xl border-dotted">
             <CloudUpload className="md:w-6 md:h-6 h-6 w-6 text-slate-600" />
@@ -101,28 +95,21 @@ export function EditProfile({
               className="absolute top-0 left-0 right-0 bottom-0 opacity-0"
             />
           </div>
-          <Input
-            value={fullNameValue}
-            onChange={(e) => setFullNameValue(e.target.value)}
-            placeholder="Name"
-            className="w-full"
-          />
-          <Input
-            value={usernameValue}
-            onChange={(e) => setUsernameValue(e.target.value)}
-            placeholder="Username"
-            className="w-full"
-          />
+
           <Textarea
-            value={bioValue || ""}
-            onChange={(e) => setBioValue(e.target.value)}
-            placeholder="Bio"
-            className="w-full text-sm"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write something..."
+            className="w-full text-xs md:text-sm"
           />
 
-          <Button className="w-full" type="submit" disabled={isLoading}>
+          <Button
+            className="w-full bg-[#4C68D5] hover:bg-[#4C68D5]/80]"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? " Updating..." : "Update Post"}
             {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Saving..." : "Save"}
           </Button>
         </form>
       </DialogContent>

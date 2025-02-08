@@ -9,7 +9,7 @@ const rootLayout = ({ children }: { children: React.ReactNode }) => {
       <Navbar />
       <div className="flex flex-col gap-5 md:flex-row justify-between md:pt-28 md:px-28 py-8 md:pb-14">
         <LeftSideBar />
-        <main className="md:w-[50%] mx-auto">{children}</main>
+        <main className="md:w-[50%] mx-auto w-full">{children}</main>
         <RightSideBar />
       </div>
       <ButtomBar />

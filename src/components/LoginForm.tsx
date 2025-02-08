@@ -15,18 +15,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
+import { signInWithEmail } from "../../server/action";
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Invalid email address",
   }),
-
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
 });
 
 const LoginForm = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,10 +43,21 @@ const LoginForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    setIsLoading(true);
+    try {
+      const response = await signInWithEmail(values);
+      console.log(response);
+      if (response?.success === true) {
+        form.reset();
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -88,8 +105,13 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Login
+          <Button
+            type="submit"
+            className="w-full bg-[#4C68D5] hover:bg-[#4C68D5]/80]"
+            disabled={isLoading}
+          >
+            {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading ? "Loging In..." : "Login"}
           </Button>
         </form>
       </Form>
