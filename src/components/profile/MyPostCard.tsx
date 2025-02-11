@@ -1,5 +1,5 @@
 import { Card } from "../ui/card";
-import { AiOutlineComment, AiOutlineLike } from "react-icons/ai";
+// import { AiOutlineComment, AiOutlineLike } from "react-icons/ai";
 import Image from "next/image";
 import { getPostsByUser } from "../../../server/postsAction";
 import { User2Icon } from "lucide-react";
@@ -17,7 +17,7 @@ const MyPostCard = async () => {
         posts.map((post) => (
           <Card
             key={post.$id}
-            className="flex flex-col gap-4 w-full bg-white bg-opacity-85 px-8 py-4 font-sans h-fit"
+            className="flex flex-col gap-4 w-full bg-white bg-opacity-85 md:px-8 px-4 py-2 md:py-4 font-sans h-fit"
           >
             <div className="flex justify-between items-center gap-2  ">
               {post.creator.imageUrl ? (
@@ -68,7 +68,7 @@ const MyPostCard = async () => {
             <hr className="border-b-1 border-slate-200 w-full" />
             <div className="flex flex-col gap-7 md:gap-10">
               <div className="flex flex-col space-y-4 md:space-y-6 w-full">
-                <p className="text-xs md:text-sm text-slate-600 text-start break-all">
+                <p className="text-xs md:text-sm text-slate-800 text-start break-all">
                   {post.content}
                 </p>
                 {post.imageUrl && (
@@ -82,7 +82,7 @@ const MyPostCard = async () => {
                   </div>
                 )}
               </div>
-              <div className="flex justify-between items-center">
+              {/* <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
                   <AiOutlineComment className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
                   <p className="text-xs md:text-sm text-slate-600">Comment</p>
@@ -91,12 +91,12 @@ const MyPostCard = async () => {
                   <AiOutlineLike className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
                   <p className="text-xs md:text-sm text-slate-600">Like</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </Card>
         ))
       ) : (
-        <Card className="flex flex-col gap-2 md:gap-4 w-full bg-white bg-opacity-85 px-8 py-4 font-sans h-fit items-center justify-center text-center">
+        <Card className="flex flex-col gap-2 md:gap-4 w-full bg-white bg-opacity-85  md:px-8 px-4 py-2 md:py-4 font-sans h-fit items-center justify-center text-center">
           <h1 className="md:text-lg font-bold text-black">No Posts Yet</h1>
           <div className="flex items-center justify-center gap-2">
             <p className="text-xs md:text-sm text-slate-600">Tap</p>

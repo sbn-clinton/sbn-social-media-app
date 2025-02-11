@@ -56,29 +56,29 @@ const MyDetails = async () => {
         </div>
       </div>
       <div className="flex items-center justify-between gap-4">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 md:gap-2 items-center">
           <FaRegNewspaper className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
           <p className="text-xs md:text-sm text-slate-600">
-            <span className="font-bold text-sm md:text-base">{totalPosts}</span>{" "}
+            <span className="font-bold text-sm md:text-base">{totalPosts}</span>
             Posts
           </p>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 md:gap-2 items-center">
           <BsPeopleFill className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
           <p className="text-xs md:text-sm text-slate-600">
             <span className="font-bold text-sm md:text-base">
               {counts.followersCount}
-            </span>{" "}
+            </span>
             Followers
           </p>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-1 md:gap-2  items-center">
           <BsPeople className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
           <p className="text-xs md:text-sm text-slate-600">
             <span className="font-bold text-sm md:text-base">
               {counts.followingCount}
-            </span>{" "}
+            </span>
             Following
           </p>
         </div>

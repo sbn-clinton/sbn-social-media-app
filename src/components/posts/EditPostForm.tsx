@@ -89,8 +89,8 @@ export function EditPostForm({
   return (
     <Dialog>
       <DialogTrigger className="bg-inherit" asChild>
-        <div className="flex items-center gap-2 cursor-pointer">
-          <Edit3 className="w-4 h-4 md:w-5 md:h-5 text-sky-500" />
+        <div className="flex items-center gap-2 cursor-pointer mx-2">
+          <Edit3 className="w-5 h-5 md:w-5 md:h-5 text-sky-500" />
         </div>
       </DialogTrigger>
       <DialogContent className="w-[90%] md:max-w-md mx-auto rounded-2xl">

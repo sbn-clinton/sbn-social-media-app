@@ -95,7 +95,7 @@ export const sendMessage = async (formData: sendMessageFormType) => {
     if (!newMessage) {
       throw new Error("Error creating Message");
     }
-    revalidatePath(`/messages/ ${receiver}`);
+    revalidatePath("");
     return { success: true, data: newMessage };
   } catch (error) {
     console.log(error);

@@ -18,7 +18,7 @@ const PostCard = async () => {
       {posts?.map((post) => (
         <Card
           key={post.$id}
-          className="flex flex-col gap-4 w-full bg-white bg-opacity-85 px-8 py-4 font-sans h-fit"
+          className="flex flex-col gap-4 w-full bg-white bg-opacity-85 px-4 md:px-8 py-2 md:py-4 font-sans h-fit"
         >
           <div className="flex justify-between items-center gap-2  ">
             {post.creator.imageUrl ? (
@@ -53,7 +53,7 @@ const PostCard = async () => {
           <hr className="border-b-1 border-slate-200 w-full" />
           <div className="flex flex-col gap-7 md:gap-10">
             <div className="flex- flex-col space-y-4 md:space-y-6 w-full">
-              <p className="text-xs md:text-sm text-slate-600 text-start break-all">
+              <p className="text-xs md:text-sm text-slate-800 text-start break-all">
                 {post.content}
               </p>
 

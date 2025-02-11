@@ -48,7 +48,7 @@ const DeletePostButton = ({
       )}
       {!isLoading && (
         <>
-          <Trash2Icon className="md:w-5 md:h-5 h-4 w-4 text-red-500" />
+          <Trash2Icon className="md:w-5 md:h-5 h-5 w-5 text-red-500" />
         </>
       )}
     </button>

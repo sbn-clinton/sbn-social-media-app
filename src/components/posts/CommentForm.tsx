@@ -83,7 +83,7 @@ const CommentForm = ({ postId }: { postId: string }) => {
             >
               <Input
                 placeholder="Share your thoughts here..."
-                className="w-full border-none focus:outline-none focus:ring-0 text-xs md:text-sm py-1 md:py-2 bg-inherit shadow-none"
+                className="w-full border-none focus:outline-none focus:ring-0 text-xs md:text-sm py-2 md:py-2 bg-inherit shadow-none"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
