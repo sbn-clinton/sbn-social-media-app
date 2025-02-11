@@ -13,6 +13,8 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { updatePost } from "../../../server/postsAction";
+import { ToastAction } from "../ui/toast";
+import { toast } from "@/hooks/use-toast";
 
 export function EditPostForm({
   postId,
@@ -35,15 +37,21 @@ export function EditPostForm({
 
     const inputElement = fileInputRef.current;
 
-    console.log("Input element:", inputElement);
-    console.log("Input element files:", inputElement?.files);
-
     if (!inputElement) {
       console.error("File input element not found.");
     }
 
     const file = inputElement?.files?.[0];
     console.log("Selected file:", file);
+
+    if (!postId || !creator || !content) {
+      toast({
+        variant: "destructive",
+        description: "Please fill in all the required fields or Login.",
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
+      return;
+    }
 
     const formData = {
       postId: postId,
@@ -65,8 +73,14 @@ export function EditPostForm({
           inputElement.value = "";
         }
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.message,
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
     } finally {
       setIsLoading(false);
     }

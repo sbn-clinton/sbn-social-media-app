@@ -12,6 +12,7 @@ const SearchBar = () => {
       <Input
         placeholder="Search"
         className="w-full border-none focus:outline-none focus:ring-0 text-sm py-1 md:py-2 px-0"
+        disabled
       />
     </Card>
   );

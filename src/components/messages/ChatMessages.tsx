@@ -2,15 +2,16 @@ import Image from "next/image";
 import { Card } from "../ui/card";
 import { getLoggedInUser } from "../../../server/action";
 import { getMessages } from "../../../server/userAction";
+import { redirect } from "next/navigation";
 
 const ChatMessages = async ({ slug }: { slug: string }) => {
-  console.log(slug);
   const reciever = slug;
   const user = await getLoggedInUser();
   const sender = user.accountId;
 
-  console.log("reciever", reciever);
-  console.log("sender", sender);
+  if (!reciever || !sender) {
+    redirect("/messages");
+  }
 
   const messages = await getMessages(reciever, sender);
 

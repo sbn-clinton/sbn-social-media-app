@@ -12,6 +12,11 @@ export const SignUpWithEmail = async (formData: signUpFormType) => {
 
   const name = fullName
 
+  if (!email || !password || !username || !fullName) {
+    
+    return
+  }
+
   try {
     const { account, database } = await createAdminClient();
     const newUserAccount = await account.create(ID.unique(), email, password, name);
@@ -58,6 +63,11 @@ export const SignUpWithEmail = async (formData: signUpFormType) => {
 
 export const signInWithEmail = async (formData: signInFormType) => {
   const { email, password} = formData;
+  if (!email || !password) {
+    console.log("Please fill in all the required fields.");
+    throw new Error("Please fill in all the required fields.");
+    return
+  }
 
   try {
     const { account } = await createAdminClient();

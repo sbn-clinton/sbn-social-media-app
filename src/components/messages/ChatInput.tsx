@@ -8,14 +8,20 @@ import { useState } from "react";
 import { sendMessage } from "../../../server/userAction";
 import { Models } from "node-appwrite";
 import { User2Icon } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "../ui/toast";
+import { useRouter } from "next/navigation";
 
 const ChatInput = ({ slug, user }: { slug: string; user: Models.Document }) => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(message);
+    if (!message || !user || !slug) {
+      return;
+    }
     setIsLoading(true);
     const formData = {
       message: message,
@@ -23,13 +29,19 @@ const ChatInput = ({ slug, user }: { slug: string; user: Models.Document }) => {
     };
     try {
       const response = await sendMessage(formData);
-      console.log(response);
+
       if (response?.success === true) {
-        console.log("Message sent successfully");
+        router.refresh();
       }
       setMessage("");
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.message,
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -47,22 +59,23 @@ const ChatInput = ({ slug, user }: { slug: string; user: Models.Document }) => {
         </div>
       )}
 
-      <Card className="flex flex-grow  border-slate-300 w-full bg-inherit">
+      <Card className="flex items-center border-slate-300 w-full bg-inherit ">
         <form
           onSubmit={handleMessage}
-          className="flex border-none w-full bg-inherit "
+          className="flex items-center border-none w-full bg-inherit"
         >
-          <input
-            type="text"
+          <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message here..."
-            className="w-full rounded-lg rounded-e-none border-slate-300  p-2 text-sm outline-none bg-slate-100"
+            placeholder="Type a message"
+            className="w-full h-[40px] max-h-[120px] resize-none overflow-hidden rounded-lg rounded-e-none  px-3 py-2 text-sm outline-none bg-white"
+            style={{ minHeight: "40px" }}
+            rows={1}
           />
           <Button
             disabled={isLoading}
             type="submit"
-            className="bg-slate-100 border-none hover:bg-slate-100 shadow-none rounded-s-none"
+            className="bg-white hover:bg-slate-100 shadow-none rounded-s-none h-full "
           >
             <FaPaperPlane className="w-5 h-5 text-slate-800" />
           </Button>

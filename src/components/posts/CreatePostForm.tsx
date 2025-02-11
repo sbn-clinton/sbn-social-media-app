@@ -15,6 +15,8 @@ import { FaPaperPlane } from "react-icons/fa";
 import { getLoggedInUser } from "../../../server/action";
 import { Models } from "node-appwrite";
 import { CreatePost } from "../../../server/postsAction";
+import { ToastAction } from "../ui/toast";
+import { toast } from "@/hooks/use-toast";
 
 export function CreatePostForm() {
   const [content, setContent] = useState("");
@@ -38,15 +40,21 @@ export function CreatePostForm() {
 
     const inputElement = fileInputRef.current;
 
-    console.log("Input element:", inputElement);
-    console.log("Input element files:", inputElement?.files);
-
     if (!inputElement) {
       console.error("File input element not found.");
     }
 
     const file = inputElement?.files?.[0];
     console.log("Selected file:", file);
+
+    if (!content || !user) {
+      toast({
+        variant: "destructive",
+        description: "Please fill in all the required fields or Login.",
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
+      return;
+    }
 
     const formData = {
       content: content,
@@ -66,8 +74,14 @@ export function CreatePostForm() {
           inputElement.value = "";
         }
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.message,
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
     } finally {
       setIsLoading(false);
     }

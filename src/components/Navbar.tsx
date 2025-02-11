@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 import SearchBar from "./SearchBar";
-import LogoutButton from "./LogoutButton";
 import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -30,10 +30,11 @@ const Navbar = () => {
 
           <h1 className="md:text-lg font-bold">SBN</h1>
         </Link>
+
         <div className="w-[60%] md:w-3/5">
           <SearchBar />
         </div>
-        <div className="w-[10%] md:w-1/5">
+        <div className="w-[10%] md:w-1/5 flex ">
           <LogoutButton />
         </div>
       </div>

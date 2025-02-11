@@ -34,6 +34,10 @@ const CommentForm = ({ postId }: { postId: string }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!comment || !user || !postId) {
+      return;
+    }
+
     const formData = {
       comment: comment,
       postId: postId,

@@ -1,7 +1,11 @@
 import LoginForm from "@/components/LoginForm";
 import Image from "next/image";
+import { getLoggedInUser } from "../../../../server/action";
+import { redirect } from "next/navigation";
 
-const LoginPage = () => {
+const LoginPage = async () => {
+  const user = await getLoggedInUser();
+  if (user) redirect("/");
   return (
     <div className="flex flex-col items-center gap-14 md:gap-y-24  pt-16 bg-[#F5F5F5] w-full h-screen">
       <div className="flex items-center justify-center gap-3">

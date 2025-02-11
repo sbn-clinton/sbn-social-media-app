@@ -18,8 +18,7 @@ const DeletePostButton = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async () => {
-    if (!creator) {
-      console.error("No creator found");
+    if (!creator || !id) {
       return;
     }
     setIsLoading(true);
@@ -35,8 +34,7 @@ const DeletePostButton = ({
     }
     setIsLoading(false);
   };
-  console.log(id);
-  console.log(creator);
+
   return (
     <button
       onClick={handleDelete}

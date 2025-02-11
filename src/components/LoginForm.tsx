@@ -19,6 +19,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import { signInWithEmail } from "../../server/action";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "./ui/toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -44,17 +46,21 @@ const LoginForm = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     setIsLoading(true);
     try {
       const response = await signInWithEmail(values);
-      console.log(response);
       if (response?.success === true) {
         form.reset();
         router.push("/");
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.message,
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
     } finally {
       setIsLoading(false);
     }

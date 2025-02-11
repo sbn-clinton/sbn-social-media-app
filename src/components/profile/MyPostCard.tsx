@@ -10,7 +10,7 @@ import DeletePostButton from "./DeletePostButton";
 
 const MyPostCard = async () => {
   const posts = await getPostsByUser();
-  console.log(posts);
+
   return (
     <div className="space-y-4">
       {posts?.length ? (
@@ -68,7 +68,7 @@ const MyPostCard = async () => {
             <hr className="border-b-1 border-slate-200 w-full" />
             <div className="flex flex-col gap-7 md:gap-10">
               <div className="flex flex-col space-y-4 md:space-y-6 w-full">
-                <p className="text-xs md:text-sm text-slate-600 text-start">
+                <p className="text-xs md:text-sm text-slate-600 text-start break-all">
                   {post.content}
                 </p>
                 {post.imageUrl && (

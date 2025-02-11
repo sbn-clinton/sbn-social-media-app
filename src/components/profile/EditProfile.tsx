@@ -13,6 +13,8 @@ import { Textarea } from "../ui/textarea";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { EditProfileAction } from "../../../server/profileAction";
+import { ToastAction } from "../ui/toast";
+import { toast } from "@/hooks/use-toast";
 
 export function EditProfile({
   fullName,
@@ -41,9 +43,6 @@ export function EditProfile({
 
     const inputElement = fileInputRef.current;
 
-    console.log("Input element:", inputElement);
-    console.log("Input element files:", inputElement?.files);
-
     if (!inputElement) {
       console.error("File input element not found.");
       return;
@@ -56,6 +55,15 @@ export function EditProfile({
 
     const file = inputElement.files[0];
     console.log("Selected file:", file);
+
+    if (!fullNameValue || !usernameValue || !userId) {
+      toast({
+        variant: "destructive",
+        description: "Please fill in all the required fields.",
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
+      return;
+    }
 
     const formData = {
       fullName: fullNameValue,

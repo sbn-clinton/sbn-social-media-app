@@ -11,6 +11,8 @@ import { CreatePost } from "../../../server/postsAction";
 import { useRouter } from "next/navigation";
 import { getLoggedInUser } from "../../../server/action";
 import { Models } from "node-appwrite";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "../ui/toast";
 
 const PostForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +36,21 @@ const PostForm = () => {
 
     const inputElement = fileInputRef.current;
 
-    console.log("Input element:", inputElement);
-    console.log("Input element files:", inputElement?.files);
-
     if (!inputElement) {
       console.error("File input element not found.");
     }
 
     const file = inputElement?.files?.[0];
     console.log("Selected file:", file);
+
+    if (!content || !user) {
+      toast({
+        variant: "destructive",
+        description: "Please fill in all the required fields or Login.",
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
+      return;
+    }
 
     const formData = {
       content: content,
@@ -60,8 +68,14 @@ const PostForm = () => {
           inputElement.value = "";
         }
       }
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.message,
+        action: <ToastAction altText="Try again">x</ToastAction>,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -83,13 +97,12 @@ const PostForm = () => {
         </Card>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
-        <input
-          type="text"
+      <form onSubmit={handleSubmit} className="flex flex-col gap-1 flex-1">
+        <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's on your mind"
-          className="w-full border-none focus:outline-none focus:ring-0 text-xs md:text-sm py-2 bg-inherit"
+          className="w-full border-none h-[40px] max-h-[120px] resize-none overflow-hidden focus:outline-none focus:ring-0 text-xs md:text-sm py-2 bg-inherit"
         />
         <hr className="w-full border-1 border-gray-300" />
         <div className="flex flex-row justify-between gap-2">

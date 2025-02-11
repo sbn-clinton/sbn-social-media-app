@@ -2,8 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { FaPaperPlane } from "react-icons/fa";
-import { BsBellFill } from "react-icons/bs";
+import { FaPaperPlane, FaUsers } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -36,11 +35,11 @@ const BottomBar = () => {
         <Link href={"/"} className="flex justify-center items-center">
           <AiFillHome className="w-6 h-6 text-[#4C68D5]" />
         </Link>
-        <div className="flex justify-center items-center">
-          <BsBellFill className="w-6 h-6 text-[#4C68D5]" />
-        </div>
         <Link href={"/messages"} className="flex justify-center items-center">
           <FaPaperPlane className="w-5 h-5 text-[#4C68D5]" />
+        </Link>
+        <Link href={"/users"} className="flex justify-center items-center">
+          <FaUsers className="w-6 h-6 text-[#4C68D5]" />
         </Link>
         {user?.imageUrl ? (
           <Link

@@ -10,14 +10,14 @@ export const EditProfileAction = async (formData: profileFormType) => {
   const { fullName, username, bio, imageId,userId, file } = formData;
 
   try {
-   console.log(fullName, username, bio, imageId,userId,  file);
+   
 
    const newImageId = await storeImage(file);
 
    const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${process.env.APPWRITE_IMAGES_BUCKET_ID}/files/${newImageId}/view?project=${process.env.APPWRITE_PROJECT_ID}&mode=admin`;
 
    if (!imageUrl || typeof imageUrl !== "string") {
-    console.error("❌ Image upload failed, invalid URL:", imageUrl);
+    
     await deleteImage(newImageId);
     throw new Error("Image upload failed.");
   }
@@ -27,7 +27,7 @@ export const EditProfileAction = async (formData: profileFormType) => {
    }
    const { database } = await createAdminClient();
 
-   const updatedUser = await database.updateDocument(
+    await database.updateDocument(
     process.env.APPWRITE_DATABASE_ID!,
     process.env.APPWRITE_USERS_COLLECTION_ID!,
     userId,
@@ -40,7 +40,7 @@ export const EditProfileAction = async (formData: profileFormType) => {
     }
   );
 
-  console.log("User updated successfully:", updatedUser);
+  console.log("User updated successfully:", );
   return { success: true };
 
 
@@ -69,7 +69,7 @@ export const storeImage = async (file: File | null) => {
       file
     );
 
-    console.log("✅ File upload response:", uploadedFile);
+    
 
     // Ensure the response has an $id
     if (!uploadedFile || !uploadedFile.$id) {

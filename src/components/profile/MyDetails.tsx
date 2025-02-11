@@ -7,11 +7,15 @@ import { EditProfile } from "./EditProfile";
 import { getLoggedInUser } from "../../../server/action";
 import { User2Icon } from "lucide-react";
 import { getPostsByUser } from "../../../server/postsAction";
+import { getFollowCounts } from "../../../server/follower";
+import { redirect } from "next/navigation";
 
 const MyDetails = async () => {
   const user = await getLoggedInUser();
+  if (!user) redirect("/login");
   const posts = await getPostsByUser();
   const totalPosts = posts?.length;
+  const counts = await getFollowCounts(user.$id);
   return (
     <Card className="flex flex-col gap-7 w-full bg-white bg-opacity-85 px-4 py-4 font-sans h-fit">
       <div className="flex flex-col w-full items-center justify-center gap-4">
@@ -41,13 +45,11 @@ const MyDetails = async () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 md:gap-2 flex-grow">
+        <div className="flex flex-col gap-1 md:gap-2 text-center">
           <h1 className="md:text-lg font-bold">
             {user.fullName} {}
-            <span className="text-xs md:text-sm text-slate-600">
-              ({user.email})
-            </span>
           </h1>
+          <p className="text-xs md:text-sm text-slate-600 ">({user.email})</p>
           <p className="text-xs md:text-sm text-slate-600 text-center">
             {user.bio}
           </p>
@@ -65,13 +67,19 @@ const MyDetails = async () => {
         <div className="flex gap-2 items-center">
           <BsPeopleFill className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
           <p className="text-xs md:text-sm text-slate-600">
-            <span className="font-bold text-sm md:text-base">18</span> Followers
+            <span className="font-bold text-sm md:text-base">
+              {counts.followersCount}
+            </span>{" "}
+            Followers
           </p>
         </div>
         <div className="flex gap-2 items-center">
           <BsPeople className="md:w-6 md:h-6 h-4 w-4 text-slate-800" />
           <p className="text-xs md:text-sm text-slate-600">
-            <span className="font-bold text-sm md:text-base">18</span> Following
+            <span className="font-bold text-sm md:text-base">
+              {counts.followingCount}
+            </span>{" "}
+            Following
           </p>
         </div>
       </div>

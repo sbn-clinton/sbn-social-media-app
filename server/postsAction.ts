@@ -50,8 +50,6 @@ export const CreatePost = async (formData: createPostFormType) => {
 
     const newImageId = await storeImage(file);
 
-   
-
     const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${process.env.APPWRITE_IMAGES_BUCKET_ID}/files/${newImageId}/view?project=${process.env.APPWRITE_PROJECT_ID}&mode=admin`;
 
     if (!imageUrl || typeof imageUrl !== "string") {
@@ -346,3 +344,117 @@ export const updatePost = async (formData: editPostFormType) => {
     console.log(error);
   }
 };  
+
+
+// ✅ Like a Post
+export const likePost = async (postId: string, userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    await database.createDocument(
+      process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!,
+      ID.unique(),
+      { postId, userId }
+    );
+    return { success: true };
+  } catch (error) {
+    console.error("Error liking post:", error);
+    throw error;
+  }
+};
+
+// ❌ Unlike a Post
+export const unlikePost = async (postId: string, userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const response = await database.listDocuments(process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!, [
+      Query.equal("postId", postId),
+      Query.equal("userId", userId),
+    ]);
+
+    if (response.total > 0) {
+      await database.deleteDocument(process.env.APPWRITE_DATABASE_ID!,
+        process.env.APPWRITE_LIKES_COLLECTION_ID!, response.documents[0].$id);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error unliking post:", error);
+    throw error;
+  }
+};
+
+// 🔢 Get Like Count
+export const getLikesCount = async (postId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const response = await database.listDocuments(process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!, [
+        Query.equal("postId", postId),
+    ]);
+
+    return response.total; // Return the number of likes
+  } catch (error) {
+    console.error("Error fetching likes count:", error);
+    throw error;
+  }
+};
+
+export const checkIfUserLiked = async (postId: string, userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const response = await database.listDocuments(
+      process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!,
+      [ Query.equal("postId", postId), Query.equal("userId", userId)]
+    );
+    return response.total > 0;
+  } catch (error) {
+    console.error("Error checking like status:", error);
+    return false;
+  }
+};
+
+export const toggleLike = async (postId: string, userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    // Check if the user already liked the post
+    const existingLike = await database.listDocuments(process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!, [ Query.equal("postId", postId), Query.equal("userId", userId)]);
+
+    if (existingLike.total > 0) {
+      // Unlike (delete the like document)
+      await database.deleteDocument(process.env.APPWRITE_DATABASE_ID!,
+        process.env.APPWRITE_LIKES_COLLECTION_ID!, existingLike.documents[0].$id);
+      return { success: true, liked: false };
+    }
+
+    // Like (create a new like document)
+    await database.createDocument(process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!, ID.unique(), { postId, userId });
+    return { success: true, liked: true };
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    throw error;
+  }
+};
+
+
+
+// 🔍 Check if User Has Liked Post
+export const hasUserLikedPost = async (postId: string, userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const response = await database.listDocuments(process.env.APPWRITE_DATABASE_ID!,
+      process.env.APPWRITE_LIKES_COLLECTION_ID!, [ Query.equal("postId", postId), Query.equal("userId", userId)]);
+    return response.total > 0;
+  } catch (error) {
+    console.error("Error checking if user liked post:", error);
+    throw error;
+  }
+};

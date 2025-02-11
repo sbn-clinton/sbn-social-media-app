@@ -6,7 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 
 const CommentCard = async ({ postId }: { postId: string }) => {
   const comments = await getComments(postId);
-  console.log(comments);
+
   return (
     <>
       {comments?.map((comment) => (
@@ -39,7 +39,7 @@ const CommentCard = async ({ postId }: { postId: string }) => {
               <p className="text-xs md:text-sm text-slate-600">
                 {formatDistanceToNow(new Date(comment.$createdAt), {
                   addSuffix: true,
-                }).slice(0, 5)}
+                })}
               </p>
             </div>
           </div>

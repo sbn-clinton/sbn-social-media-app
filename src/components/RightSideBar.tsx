@@ -2,12 +2,14 @@ import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { FaPaperPlane } from "react-icons/fa";
-import { getFewUsers } from "../../server/userAction";
 import { User2Icon } from "lucide-react";
+import { getFewUsers } from "../../server/userAction";
+import { getLoggedInUser } from "../../server/action";
+import FollowButton from "./messages/FollowButton";
 
 const RightSideBar = async () => {
   const users = await getFewUsers();
+  const currentUser = await getLoggedInUser();
   return (
     <Card className="md:w-[25%] hidden md:block fixed top-28 right-8 px-4 py-10 font-sans h-fit bg-inherit border-b-0">
       <div className="flex flex-col  justify-start gap-y-6   ">
@@ -17,35 +19,28 @@ const RightSideBar = async () => {
           {users?.map((user) => (
             <div
               key={user.$id}
-              className="flex flex-row items-center justify-between gap-2 w-full"
+              className="flex flex-row gap-2 items-center justify-between w-full"
             >
               {user.imageUrl ? (
-                <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full">
+                <div className="relative w-10 h-10  rounded-full">
                   <Image
                     src={user.imageUrl}
-                    alt="profile"
+                    alt="img"
                     fill
                     className="rounded-full"
                   />
                 </div>
               ) : (
-                <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full">
-                  <User2Icon className="w-full h-full rounded-full" />
-                </div>
+                <Card className="relative w-10 h-10 ">
+                  <User2Icon className="w-full h-full" />
+                </Card>
               )}
-              <div className="flex flex-col items-start gap-1 flex-1">
-                <p className="text-sm text-slate-600">{user.username}</p>
-                <p className="text-xs text-slate-500">{user.bio}</p>
+
+              <div className="flex flex-col flex-1">
+                <h1 className=" font-bold">{user.username}</h1>
+                <p className="text-xs  text-slate-500">{user.bio}</p>
               </div>
-              <Button
-                size={"icon"}
-                className="bg-inherit border-none hover:bg-inherit"
-                asChild
-              >
-                <Link href={`/messages/${user.$id}`} className="">
-                  <FaPaperPlane className="w-5 h-5 text-slate-800" />
-                </Link>
-              </Button>
+              <FollowButton user={user} currentUser={currentUser} />
             </div>
           ))}
           <Button

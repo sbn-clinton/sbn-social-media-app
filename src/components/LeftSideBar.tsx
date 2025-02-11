@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Card } from "./ui/card";
 import Link from "next/link";
 import { Home, User, User2Icon } from "lucide-react";
-import { FaTelegramPlane } from "react-icons/fa";
+import { FaPaperPlane, FaUsers } from "react-icons/fa";
 import { getLoggedInUser } from "../../server/action";
 
 const LeftSideBar = async () => {
@@ -52,11 +52,19 @@ const LeftSideBar = async () => {
           </Link>
           <hr className="border bg-gray-600 w-full" />
           <Link
+            href={"/users"}
+            className="flex flex-row items-center gap-x-2  text-slate-800 "
+          >
+            <FaUsers className="w-6 h-6" />
+            <span className="text-sm text-slate-500">All Users</span>
+          </Link>
+          <hr className="border bg-gray-600 w-full" />
+          <Link
             href={"/messages"}
             className="flex flex-row items-center gap-x-2  text-slate-800 "
           >
-            <FaTelegramPlane className="w-6 h-6" />
-            <span className="text-sm text-slate-500">Messages</span>
+            <FaPaperPlane className="w-6 h-6" />
+            <span className="text-sm text-slate-500">Chat Followers</span>
           </Link>
           <hr className="border bg-gray-600 w-full" />
         </div>
